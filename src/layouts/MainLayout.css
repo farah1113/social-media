@@ -1,0 +1,15 @@
+.main-layout {
+  min-height: 100vh;
+  background: #f4f8fa;
+}
+
+.main-layout__content {
+  min-height: 100vh;
+  margin-left: 240px;
+}
+
+@media (max-width: 900px) {
+  .main-layout__content {
+    margin-left: 78px;
+  }
+}
