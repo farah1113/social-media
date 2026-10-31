@@ -1,0 +1,41 @@
+export interface CommentCreator {
+  _id: string;
+  name: string;
+  username: string;
+  photo?: string;
+}
+
+export interface Comment {
+  _id: string;
+  content: string;
+
+  commentCreator: CommentCreator;
+
+  post: string;
+
+  parentComment: string | null;
+
+  likes: string[];
+
+  createdAt: string;
+
+  repliesCount: number;
+}
+
+export interface GetPostCommentsResponse {
+  success: boolean;
+  message: string;
+
+  data: {
+    comments: Comment[];
+  };
+
+  meta: {
+    pagination: {
+      currentPage: number;
+      limit: number;
+      total: number;
+      numberOfPages: number;
+    };
+  };
+}

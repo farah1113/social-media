@@ -14,7 +14,7 @@ import Explore from "../pages/Explore/Explore";
 import Bookmarks from "../pages/Bookmarks/Bookmarks";
 import Notifications from "../pages/Notifications/Notifications";
 import Profile from "../pages/Profile/Profile";
-
+import PostDetails from "../pages/PostDetails/PostDetails";
 import ProtectedRoute from "./ProtectedRoutes";
 
 const router = createBrowserRouter([
@@ -65,6 +65,10 @@ const router = createBrowserRouter([
             path: "/profile",
             element: <Profile />,
           },
+          {
+  path: "/posts/:postId",
+  element: <PostDetails />,
+}
         ],
       },
     ],

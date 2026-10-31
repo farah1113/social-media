@@ -444,3 +444,35 @@
     margin-inline: 16px;
   }
 }
+.post-card__body-button {
+  display: block;
+
+  width: 100%;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  text-align: left;
+
+  font: inherit;
+
+  cursor: pointer;
+}
+
+
+.post-card__media-button {
+  display: block;
+
+  width: 100%;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  cursor: pointer;
+}

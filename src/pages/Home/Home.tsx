@@ -1,154 +1,208 @@
-import { useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 import {
   Image,
-  Plus,
   Smile,
 } from "lucide-react";
 
-import { getAllPosts } from "../../api/posts.api";
-import PostCard from "../../components/PostCard/PostCard";
+import {
+  getAllPosts,
+} from "../../api/posts.api";
 
-import type { Post } from "../../types/post.types";
+import type {
+  Post,
+} from "../../types/post.types";
+
+import PostCard from "../../components/PostCard/PostCard";
+import CreatePostModal from "../../components/CreatePostModal/CreatePostModal";
 
 import "./Home.css";
 
-export default function Home() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
 
-  useEffect(() => {
-    async function loadPosts() {
+export default function Home() {
+  /* =========================
+     POSTS STATE
+  ========================= */
+
+  const [posts, setPosts] =
+    useState<Post[]>([]);
+
+  const [isLoading, setIsLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState("");
+
+
+  /* =========================
+     CREATE POST MODAL STATE
+  ========================= */
+
+  const [
+    isCreatePostOpen,
+    setIsCreatePostOpen,
+  ] = useState(false);
+
+
+  /* =========================
+     GET ALL POSTS
+  ========================= */
+
+  const loadPosts =
+    useCallback(async () => {
       try {
         setIsLoading(true);
+
         setError("");
 
-        const response = await getAllPosts();
+        const response =
+          await getAllPosts();
 
-        setPosts(response.data.posts);
+        setPosts(
+          response.data.posts
+        );
       } catch (error) {
-        console.error("GET ALL POSTS ERROR:", error);
+        console.error(
+          "GET ALL POSTS ERROR:",
+          error
+        );
 
-        setError("Couldn't load posts.");
+        setError(
+          "Couldn't load posts."
+        );
       } finally {
         setIsLoading(false);
       }
-    }
+    }, []);
 
+
+  /* =========================
+     LOAD POSTS ON PAGE OPEN
+  ========================= */
+
+  useEffect(() => {
     loadPosts();
-  }, []);
+  }, [loadPosts]);
+
+
+  /* =========================
+     MODAL FUNCTIONS
+  ========================= */
+
+  function openCreatePostModal() {
+    setIsCreatePostOpen(true);
+  }
+
+
+  function closeCreatePostModal() {
+    setIsCreatePostOpen(false);
+  }
+
+
+  /* =========================
+     JSX
+  ========================= */
 
   return (
-    <main className="home">
-      <div className="home__layout">
+    <>
+      <main className="home">
 
-        {/* =========================
+        {/* =====================
             MAIN FEED
-        ========================== */}
+        ====================== */}
 
-        <section className="home__main">
+        <section className="home__feed">
 
-          {/* HEADER */}
+          {/* =====================
+              HEADER
+          ====================== */}
 
-          <header className="home__header">
+          <div className="home__header">
+
             <div>
               <span className="home__eyebrow">
-                COMMUNITY
+                YOUR FEED
               </span>
 
-              <h1>Home</h1>
-
-              <p>
-                See what everyone is sharing.
-              </p>
+              <h1>
+                Home
+              </h1>
             </div>
-          </header>
+
+          </div>
 
 
-          {/* =========================
+          {/* =====================
               STORIES
-          ========================== */}
+          ====================== */}
 
           <section className="stories">
 
             <button
-              className="story story--add"
               type="button"
+              className="story"
             >
-              <span className="story__avatar story__avatar--add">
-                <Plus size={19} />
-              </span>
+              <div className="story__avatar">
+                F
+              </div>
 
-              <span>Your story</span>
+              <span>
+                Your story
+              </span>
             </button>
 
 
             <button
-              className="story"
               type="button"
-            >
-              <span className="story__avatar">
-                M
-              </span>
-
-              <span>Malak</span>
-            </button>
-
-
-            <button
               className="story"
-              type="button"
             >
-              <span className="story__avatar">
-                S
-              </span>
-
-              <span>Sara</span>
-            </button>
-
-
-            <button
-              className="story"
-              type="button"
-            >
-              <span className="story__avatar">
+              <div className="story__avatar">
                 A
-              </span>
+              </div>
 
-              <span>Ahmed</span>
+              <span>
+                Ahmed
+              </span>
             </button>
 
 
             <button
-              className="story"
               type="button"
+              className="story"
             >
-              <span className="story__avatar">
-                N
-              </span>
+              <div className="story__avatar">
+                M
+              </div>
 
-              <span>Nour</span>
+              <span>
+                Mariam
+              </span>
             </button>
 
 
             <button
-              className="story"
               type="button"
+              className="story"
             >
-              <span className="story__avatar">
-                Y
-              </span>
+              <div className="story__avatar">
+                S
+              </div>
 
-              <span>Youssef</span>
+              <span>
+                Sara
+              </span>
             </button>
 
           </section>
 
 
-          {/* =========================
-              CREATE POST
-          ========================== */}
+          {/* =====================
+              CREATE POST CARD
+          ====================== */}
 
           <section className="create-post">
 
@@ -158,9 +212,11 @@ export default function Home() {
                 F
               </div>
 
+
               <button
                 type="button"
                 className="create-post__input"
+                onClick={openCreatePostModal}
               >
                 What's on your mind?
               </button>
@@ -170,21 +226,40 @@ export default function Home() {
 
             <div className="create-post__bottom">
 
-              <button type="button">
+              {/* PHOTO */}
+
+              <button
+                type="button"
+                onClick={openCreatePostModal}
+              >
                 <Image size={18} />
-                <span>Photo</span>
+
+                <span>
+                  Photo
+                </span>
               </button>
 
 
-              <button type="button">
+              {/* FEELING */}
+
+              <button
+                type="button"
+                onClick={openCreatePostModal}
+              >
                 <Smile size={18} />
-                <span>Feeling</span>
+
+                <span>
+                  Feeling
+                </span>
               </button>
 
+
+              {/* CREATE */}
 
               <button
                 type="button"
                 className="create-post__button"
+                onClick={openCreatePostModal}
               >
                 Create post
               </button>
@@ -194,176 +269,129 @@ export default function Home() {
           </section>
 
 
-          {/* =========================
+          {/* =====================
               FEED TITLE
-          ========================== */}
+          ====================== */}
 
           <div className="feed-title">
 
             <div>
-              <span className="feed-title__eyebrow">
-                COMMUNITY FEED
+              <span>
+                LATEST
               </span>
 
-              <h2>Latest posts</h2>
+              <h2>
+                Recent posts
+              </h2>
             </div>
 
-
-            <button type="button">
-              Latest
+            <button
+              type="button"
+              onClick={loadPosts}
+            >
+              Refresh
             </button>
 
           </div>
 
 
-          {/* =========================
+          {/* =====================
+              LOADING
+          ====================== */}
+
+          {isLoading && (
+
+            <div className="home__status">
+              Loading posts...
+            </div>
+
+          )}
+
+
+          {/* =====================
+              ERROR
+          ====================== */}
+
+          {!isLoading && error && (
+
+            <div className="home__status home__status--error">
+
+              <p>
+                {error}
+              </p>
+
+              <button
+                type="button"
+                onClick={loadPosts}
+              >
+                Try again
+              </button>
+
+            </div>
+
+          )}
+
+
+          {/* =====================
               POSTS
-          ========================== */}
+          ====================== */}
 
-          <div className="home__feed">
+          {!isLoading &&
+            !error &&
+            posts.map((post) => (
 
-            {/* LOADING */}
+              <PostCard
+                key={post._id}
+                post={post}
+              />
 
-            {isLoading && (
-              <div className="feed-placeholder">
-                <div className="feed-loader" />
+            ))}
+
+
+          {/* =====================
+              EMPTY
+          ====================== */}
+
+          {!isLoading &&
+            !error &&
+            posts.length === 0 && (
+
+              <div className="home__status">
 
                 <p>
-                  Loading posts...
+                  No posts yet.
                 </p>
+
+                <button
+                  type="button"
+                  onClick={openCreatePostModal}
+                >
+                  Create your first post
+                </button>
+
               </div>
+
             )}
-
-
-            {/* ERROR */}
-
-            {!isLoading && error && (
-              <div className="feed-placeholder">
-                <strong>
-                  Something went wrong
-                </strong>
-
-                <p>
-                  {error}
-                </p>
-              </div>
-            )}
-
-
-            {/* EMPTY */}
-
-            {!isLoading &&
-              !error &&
-              posts.length === 0 && (
-                <div className="feed-placeholder">
-                  <strong>
-                    No posts yet
-                  </strong>
-
-                  <p>
-                    Be the first person to post something.
-                  </p>
-                </div>
-              )}
-
-
-            {/* REAL POSTS */}
-
-            {!isLoading &&
-              !error &&
-              posts.map((post) => (
-                <PostCard
-                  key={post._id}
-                  post={post}
-                />
-              ))}
-
-          </div>
 
         </section>
 
 
-        {/* =========================
+        {/* =====================
             RIGHT SIDEBAR
-        ========================== */}
+        ====================== */}
 
         <aside className="home__right">
 
-          {/* PEOPLE */}
+          <div className="right-card">
 
-          <section className="right-card">
+            <span className="right-card__eyebrow">
+              DISCOVER
+            </span>
 
-            <div className="right-card__heading">
+            <h3>
+              People you may know
+            </h3>
 
-              <div>
-                <span>
-                  DISCOVER
-                </span>
-
-                <h3>
-                  People you may like
-                </h3>
-              </div>
-
-
-              <button type="button">
-                See all
-              </button>
-
-            </div>
-
-
-            {/* USER */}
-
-            <div className="suggested-user">
-
-              <div className="suggested-user__avatar">
-                M
-              </div>
-
-              <div className="suggested-user__info">
-                <strong>
-                  Malak
-                </strong>
-
-                <span>
-                  @malak6
-                </span>
-              </div>
-
-              <button type="button">
-                Follow
-              </button>
-
-            </div>
-
-
-            {/* USER */}
-
-            <div className="suggested-user">
-
-              <div className="suggested-user__avatar">
-                S
-              </div>
-
-              <div className="suggested-user__info">
-                <strong>
-                  Sara
-                </strong>
-
-                <span>
-                  @sara
-                </span>
-              </div>
-
-              <button type="button">
-                Follow
-              </button>
-
-            </div>
-
-
-            {/* USER */}
 
             <div className="suggested-user">
 
@@ -371,7 +399,9 @@ export default function Home() {
                 A
               </div>
 
+
               <div className="suggested-user__info">
+
                 <strong>
                   Ahmed
                 </strong>
@@ -379,7 +409,9 @@ export default function Home() {
                 <span>
                   @ahmed
                 </span>
+
               </div>
+
 
               <button type="button">
                 Follow
@@ -387,35 +419,75 @@ export default function Home() {
 
             </div>
 
-          </section>
+
+            <div className="suggested-user">
+
+              <div className="suggested-user__avatar">
+                M
+              </div>
 
 
-          {/* SMALL INFO CARD */}
+              <div className="suggested-user__info">
 
-          <section className="home-info-card">
+                <strong>
+                  Mariam
+                </strong>
 
-            <span className="home-info-card__label">
+                <span>
+                  @mariam
+                </span>
+
+              </div>
+
+
+              <button type="button">
+                Follow
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div className="right-card">
+
+            <span className="right-card__eyebrow">
               ROUTE POSTS
             </span>
 
             <h3>
-              Share what's happening.
+              Join the conversation.
             </h3>
 
             <p>
-              Connect, discover and join the conversation.
+              Share moments, connect with people,
+              and discover what's happening.
             </p>
 
-          </section>
+            <small>
+              Route Posts · Social media made simple
+            </small>
 
-
-          <p className="home__copyright">
-            Route Posts · Social media made simple
-          </p>
+          </div>
 
         </aside>
 
-      </div>
-    </main>
+      </main>
+
+
+      {/* =========================
+          CREATE POST MODAL
+
+          IMPORTANT:
+          Keep this OUTSIDE .home
+      ========================= */}
+
+      <CreatePostModal
+        isOpen={isCreatePostOpen}
+        onClose={closeCreatePostModal}
+        onPostCreated={loadPosts}
+      />
+
+    </>
   );
 }

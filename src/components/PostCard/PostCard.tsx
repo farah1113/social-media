@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   Bookmark,
@@ -13,17 +14,53 @@ import type { Post } from "../../types/post.types";
 
 import "./PostCard.css";
 
+
 interface PostCardProps {
   post: Post;
 }
 
-export default function PostCard({ post }: PostCardProps) {
-  const [avatarError, setAvatarError] = useState(false);
-  const [imageError, setImageError] = useState(false);
-  const [sharedImageError, setSharedImageError] = useState(false);
+
+export default function PostCard({
+  post,
+}: PostCardProps) {
+
+  const navigate = useNavigate();
+
+  const [avatarError, setAvatarError] =
+    useState(false);
+
+  const [imageError, setImageError] =
+    useState(false);
+
+  const [
+    sharedImageError,
+    setSharedImageError,
+  ] = useState(false);
+
+
+  /* =========================
+     OPEN POST DETAILS
+  ========================= */
+
+  function openPostDetails() {
+    navigate(`/posts/${post._id}`);
+  }
+
+
+  /* =========================
+     USER INITIAL
+  ========================= */
 
   const userInitial =
-    post.user?.name?.trim()?.charAt(0).toUpperCase() || "?";
+    post.user?.name
+      ?.trim()
+      ?.charAt(0)
+      .toUpperCase() || "?";
+
+
+  /* =========================
+     DATE
+  ========================= */
 
   const formattedDate = new Date(
     post.createdAt
@@ -32,10 +69,13 @@ export default function PostCard({ post }: PostCardProps) {
     day: "numeric",
   });
 
+
   return (
     <article className="post-card">
 
-      {/* HEADER */}
+      {/* =====================
+          HEADER
+      ====================== */}
 
       <header className="post-card__header">
 
@@ -44,16 +84,22 @@ export default function PostCard({ post }: PostCardProps) {
           {/* AVATAR */}
 
           {post.user?.photo && !avatarError ? (
+
             <img
               className="post-card__avatar"
               src={post.user.photo}
               alt={post.user.name || "User"}
-              onError={() => setAvatarError(true)}
+              onError={() =>
+                setAvatarError(true)
+              }
             />
+
           ) : (
+
             <div className="post-card__avatar-fallback">
               {userInitial}
             </div>
+
           )}
 
 
@@ -64,13 +110,17 @@ export default function PostCard({ post }: PostCardProps) {
             <div className="post-card__author-name">
 
               <strong>
-                {post.user?.name || "Unknown user"}
+                {post.user?.name ||
+                  "Unknown user"}
               </strong>
 
+
               {post.user?.username && (
+
                 <span>
                   @{post.user.username}
                 </span>
+
               )}
 
             </div>
@@ -82,7 +132,9 @@ export default function PostCard({ post }: PostCardProps) {
                 {formattedDate}
               </span>
 
-              <span>•</span>
+              <span>
+                •
+              </span>
 
               <span className="post-card__privacy">
                 {post.privacy}
@@ -95,6 +147,8 @@ export default function PostCard({ post }: PostCardProps) {
         </div>
 
 
+        {/* MORE */}
+
         <button
           type="button"
           className="post-card__more"
@@ -106,31 +160,58 @@ export default function PostCard({ post }: PostCardProps) {
       </header>
 
 
-      {/* BODY */}
+      {/* =====================
+          BODY
+      ====================== */}
 
       {post.body?.trim() && (
-        <p className="post-card__body">
-          {post.body.trim()}
-        </p>
+
+        <button
+          type="button"
+          className="post-card__body-button"
+          onClick={openPostDetails}
+        >
+          <p className="post-card__body">
+            {post.body.trim()}
+          </p>
+        </button>
+
       )}
 
 
-      {/* POST IMAGE */}
+      {/* =====================
+          POST IMAGE
+      ====================== */}
 
       {post.image && (
+
         <>
           {!imageError ? (
-            <div className="post-card__media">
 
-              <img
-                src={post.image}
-                alt="Post"
-                loading="lazy"
-                onError={() => setImageError(true)}
-              />
+            <button
+              type="button"
+              className="post-card__media-button"
+              onClick={openPostDetails}
+              aria-label="View post"
+            >
 
-            </div>
+              <div className="post-card__media">
+
+                <img
+                  src={post.image}
+                  alt="Post"
+                  loading="lazy"
+                  onError={() =>
+                    setImageError(true)
+                  }
+                />
+
+              </div>
+
+            </button>
+
           ) : (
+
             <div className="post-card__media-unavailable">
 
               <ImageOff size={20} />
@@ -140,23 +221,32 @@ export default function PostCard({ post }: PostCardProps) {
               </span>
 
             </div>
+
           )}
         </>
+
       )}
 
 
-      {/* SHARED POST */}
+      {/* =====================
+          SHARED POST
+      ====================== */}
 
       {post.sharedPost && (
+
         <div className="post-card__shared">
+
+          {/* SHARED USER */}
 
           <div className="post-card__shared-header">
 
             <div className="post-card__shared-avatar">
+
               {post.sharedPost.user?.name
                 ?.trim()
                 ?.charAt(0)
                 .toUpperCase() || "?"}
+
             </div>
 
 
@@ -167,10 +257,13 @@ export default function PostCard({ post }: PostCardProps) {
                   "Unknown user"}
               </strong>
 
+
               {post.sharedPost.user?.username && (
+
                 <span>
                   @{post.sharedPost.user.username}
                 </span>
+
               )}
 
             </div>
@@ -181,17 +274,21 @@ export default function PostCard({ post }: PostCardProps) {
           {/* SHARED BODY */}
 
           {post.sharedPost.body?.trim() && (
+
             <p className="post-card__shared-body">
               {post.sharedPost.body.trim()}
             </p>
+
           )}
 
 
           {/* SHARED IMAGE */}
 
           {post.sharedPost.image && (
+
             <>
               {!sharedImageError ? (
+
                 <div className="post-card__shared-media">
 
                   <img
@@ -204,7 +301,9 @@ export default function PostCard({ post }: PostCardProps) {
                   />
 
                 </div>
+
               ) : (
+
                 <div className="post-card__shared-image-unavailable">
 
                   <ImageOff size={18} />
@@ -214,15 +313,20 @@ export default function PostCard({ post }: PostCardProps) {
                   </span>
 
                 </div>
+
               )}
             </>
+
           )}
 
         </div>
+
       )}
 
 
-      {/* ACTIONS */}
+      {/* =====================
+          ACTIONS
+      ====================== */}
 
       <div className="post-card__actions">
 
@@ -235,13 +339,18 @@ export default function PostCard({ post }: PostCardProps) {
             className="post-card__action"
             aria-label="Like"
           >
+
             <Heart size={22} />
 
+
             {post.likesCount > 0 && (
+
               <span>
                 {post.likesCount}
               </span>
+
             )}
+
           </button>
 
 
@@ -251,14 +360,20 @@ export default function PostCard({ post }: PostCardProps) {
             type="button"
             className="post-card__action"
             aria-label="Comment"
+            onClick={openPostDetails}
           >
+
             <MessageCircle size={22} />
 
+
             {post.commentsCount > 0 && (
+
               <span>
                 {post.commentsCount}
               </span>
+
             )}
+
           </button>
 
 
@@ -269,13 +384,18 @@ export default function PostCard({ post }: PostCardProps) {
             className="post-card__action"
             aria-label="Share"
           >
+
             <Repeat2 size={21} />
 
+
             {post.sharesCount > 0 && (
+
               <span>
                 {post.sharesCount}
               </span>
+
             )}
+
           </button>
 
         </div>
@@ -292,18 +412,26 @@ export default function PostCard({ post }: PostCardProps) {
           }`}
           aria-label="Bookmark"
         >
+
           <Bookmark size={21} />
+
         </button>
 
       </div>
 
 
-      {/* COMMENTS */}
+      {/* =====================
+          COMMENTS
+      ====================== */}
 
       {post.commentsCount > 0 && (
+
         <footer className="post-card__footer">
 
-          <button type="button">
+          <button
+            type="button"
+            onClick={openPostDetails}
+          >
             View all {post.commentsCount}{" "}
             {post.commentsCount === 1
               ? "comment"
@@ -311,6 +439,7 @@ export default function PostCard({ post }: PostCardProps) {
           </button>
 
         </footer>
+
       )}
 
     </article>

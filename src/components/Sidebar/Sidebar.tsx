@@ -10,8 +10,13 @@ import {
 import { NavLink } from "react-router-dom";
 
 import "./Sidebar.css";
+interface SidebarProps {
+  onCreatePost: () => void;
+}
 
-export default function Sidebar() {
+export default function Sidebar({
+  onCreatePost,
+}: SidebarProps) {
   const getLinkClass = ({ isActive }: { isActive: boolean }) =>
     `sidebar__link ${isActive ? "sidebar__link--active" : ""}`;
 
@@ -53,10 +58,14 @@ export default function Sidebar() {
         </NavLink>
       </nav>
 
-      <button className="sidebar__create" type="button">
-        <Plus size={18} />
-        <span>Create post</span>
-      </button>
+   <button
+  type="button"
+  className="sidebar__create"
+  onClick={onCreatePost}
+>
+  <Plus size={20} />
+  <span>Create post</span>
+</button>
 
       <div className="sidebar__account">
         <div className="sidebar__account-avatar">
